@@ -24,17 +24,17 @@ if not load_pre_comp_hog:
     start_time = time.time()
     hists_train = np.apply_along_axis(hog, 1, X_train, n_orientations=9,
                                       cell_size=8, block_size=2)
-    print('Total time for HOG on train: ', time.time()-start_time, 's \n')
+    print('Total time for HOG on train: ', time.time()-start_time, 's')
     
     start_time = time.time()
     hists_val = np.apply_along_axis(hog, 1, X_val, n_orientations=9,
                                     cell_size=8, block_size=2)
-    print('Total time for HOG on validation: ', time.time()-start_time, 's \n')
+    print('Total time for HOG on validation: ', time.time()-start_time, 's')
     
     start_time = time.time()
     hists_test = np.apply_along_axis(hog, 1, Xte, n_orientations=9,
                                      cell_size=8, block_size=2)
-    print('Total time for HOG on test: ', time.time()-start_time, 's \n')
+    print('Total time for HOG on test: ', time.time()-start_time, 's')
 
 # Code to save pre-computed versions
 # with open('pre_computed_hogs.npy', 'wb') as f:
