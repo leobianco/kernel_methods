@@ -12,7 +12,7 @@ import time
 print('Loading data...', end=' ', flush=True)
 X_train, Y_train, X_val, Y_val, Xte = load_data(val_size=0.5, 
                                                 data_augmentation=False)
-print('Loaded !')
+print('loaded !')
 
 
 # 2. Extract features
@@ -53,9 +53,9 @@ else:  # Load pre-computed versions
 
 
 # 3. Select model, train, and predict
-model_choice = input("Select a model, 'onevsall' or 'ridge': ") or 'onevsall'
+model_choice = input("Select a model, 'onevsall'/'ridge': (Enter to default) ")\
+                     or 'onevsall'
 assert (model_choice=="ridge" or model_choice=="onevsall"), "Invalid choice !"
-
 
 # Model 1: kernel ridge regression.
 if model_choice=="ridge":
@@ -67,15 +67,14 @@ if model_choice=="ridge":
     print('Validation score: ', model.score(X_val, Y_val), '\n')
     save_test_preds(model, Xte)
 
-
 # Model 2: one vs. all multiclass SVM.
 if model_choice=="onevsall":
     # Parameters
-    C = float(input('Enter regularization parameter C: (Enter to default)') 
+    C = float(input('Enter regularization parameter C: (Enter to default) ') 
                   or '10')
-    sigma = float(input('Enter variance parameter sigma: (Enter to default)')
+    sigma = float(input('Enter variance parameter sigma: (Enter to default) ')
                   or '1')
-    degree = int(input('Enter degree of polynomial: (Enter to default)') 
+    degree = int(input('Enter degree of polynomial: (Enter to default) ') 
                   or '3')
 
     # Choose kernel
@@ -87,7 +86,7 @@ if model_choice=="onevsall":
             }
 
     kernel_name = input('Enter desired kernel (RBF, Linear, Poly, Chi2): ')\
-                  or 'RBF'
+                  or 'Chi2'
     assert kernel_name in ['RBF', 'Linear', 'Poly', 'Chi2'], 'Invalid choice !'
 
     kernel = kernel_dict[kernel_name].kernel
@@ -96,15 +95,12 @@ if model_choice=="onevsall":
     pre_K = kernel(hists_train, hists_train)  # pre-computed kernel matrix
     print('done !')
 
-    # Model
     model = svmOneVsAll(C=C, kernel=kernel, pre_K=pre_K)
     # Fit
-    print('Fitting model...')
+    print('Fitting model...', flush=True)
     model.fit(hists_train, Y_train)
     print('done !')
     # Validate
-    print('teste') 
-    print(model.score(hists_val, Y_val))
     print('(Simple) validation score: ', model.score(hists_val, Y_val))
     # Predict
     save_test_preds(model, hists_test)

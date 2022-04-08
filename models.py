@@ -229,7 +229,7 @@ class KernelRR:
         self.a = y.T @ np.linalg.inv(K + self.lambd *np.identity(n)) 
         self.data = X.copy()
 
-    def predict(self,x):
+    def predict(self, x):
         """Predict labels for given test data.
 
         Arguments
@@ -246,7 +246,7 @@ class KernelRR:
 
         return np.argmax(f_x, axis=0)
 
-    def score(self,x, y):
+    def score(self, x, y):
         """Calculates mean accuracy score given covariates to predict and true
         labels.
 
@@ -260,5 +260,7 @@ class KernelRR:
             (float): average accuracy score.
         """
 
+        print('predicting...', end=' ', flush=True)
         y_pred = self.predict(x)
-        return np.sum(y_pred == y)/y.shape[0]
+        print('predicted!')
+        return np.mean(y_pred == y)
