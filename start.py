@@ -86,7 +86,7 @@ if model_choice=="onevsall":
             }
 
     kernel_name = input('Enter desired kernel (RBF, Linear, Poly, Chi2): ')\
-                  or 'Chi2'
+                  or 'RBF'
     assert kernel_name in ['RBF', 'Linear', 'Poly', 'Chi2'], 'Invalid choice !'
 
     kernel = kernel_dict[kernel_name].kernel
