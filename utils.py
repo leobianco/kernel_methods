@@ -209,7 +209,7 @@ def vec2onehot(y, n_classes=10):
     return Y
 
 
-def save_test_preds(model, test_data, file_name='test_preds.csv'):
+def save_test_preds(model, test_data, file_name='Yte.csv'):
     """Predicts test data labels and saves them in csv format.
 
     Arguments
