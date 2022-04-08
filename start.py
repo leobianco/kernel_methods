@@ -9,50 +9,51 @@ import time
 
 
 # 1. Load data
-print('Loading data \n')
+print('Loading data...', end=' ', flush=True)
 X_train, Y_train, X_val, Y_val, Xte = load_data(val_size=0.5, 
                                                 data_augmentation=False)
-print('Loaded data ! \n')
+print('Loaded !')
 
 
 # 2. Extract features
+load_pre_comp_hog = bool('Load pre-computed HOG ? (True/False)') or True
 
-# print('Extracting features with HOG (takes some minutes) \n')
-# 
-# start_time = time.time()
-# hists_train = np.apply_along_axis(hog, 1, X_train, n_orientations=9,
-#                                   cell_size=8, block_size=2)
-# print('Total time for HOG on train: ', time.time()-start_time, 's \n')
-# 
-# start_time = time.time()
-# hists_val = np.apply_along_axis(hog, 1, X_val, n_orientations=9,
-#                                 cell_size=8, block_size=2)
-# print('Total time for HOG on validation: ', time.time()-start_time, 's \n')
-# 
-# start_time = time.time()
-# hists_test = np.apply_along_axis(hog, 1, Xte, n_orientations=9,
-#                                  cell_size=8, block_size=2)
-# print('Total time for HOG on test: ', time.time()-start_time, 's \n')
-# 
-# For DEBUGGING or other TEST purposes, you can load pre-computed hogs
+if not load_pre_comp_hog:
+    print('Extracting features with HOG (takes some minutes) \n')
+    
+    start_time = time.time()
+    hists_train = np.apply_along_axis(hog, 1, X_train, n_orientations=9,
+                                      cell_size=8, block_size=2)
+    print('Total time for HOG on train: ', time.time()-start_time, 's \n')
+    
+    start_time = time.time()
+    hists_val = np.apply_along_axis(hog, 1, X_val, n_orientations=9,
+                                    cell_size=8, block_size=2)
+    print('Total time for HOG on validation: ', time.time()-start_time, 's \n')
+    
+    start_time = time.time()
+    hists_test = np.apply_along_axis(hog, 1, Xte, n_orientations=9,
+                                     cell_size=8, block_size=2)
+    print('Total time for HOG on test: ', time.time()-start_time, 's \n')
 
-# Save calculated versions
+# Code to save pre-computed versions
 # with open('pre_computed_hogs.npy', 'wb') as f:
 #     np.save(f, hists_train)
 #     np.save(f, hists_val)
 #     np.save(f, hists_test)
-# print('saved hogs')
+# print('Saved HOGs')
 # exit()
 
-# Load saved versions
-with open('pre_computed_hogs.npy', 'rb') as f:
-    hists_train = np.load(f)
-    hists_val = np.load(f)
-    hists_test = np.load(f)
+else:  # Load pre-computed versions
+    print('Loading pre-computed HOG descriptors.')
+    with open('pre_computed_hogs.npy', 'rb') as f:
+        hists_train = np.load(f)
+        hists_val = np.load(f)
+        hists_test = np.load(f)
 
 
 # 3. Select model, train, and predict
-model_choice = input("Select a model: 'onevsall' or 'ridge': ") or 'onevsall'
+model_choice = input("Select a model, 'onevsall' or 'ridge': ") or 'onevsall'
 assert (model_choice=="ridge" or model_choice=="onevsall"), "Invalid choice !"
 
 
@@ -70,9 +71,12 @@ if model_choice=="ridge":
 # Model 2: one vs. all multiclass SVM.
 if model_choice=="onevsall":
     # Parameters
-    C = float(input('Enter regularization parameter C: ') or '10')
-    sigma = float(input('Enter variance parameter sigma: ') or '1')
-    degree = int(input('Enter degree of polynomial: ') or '3')
+    C = float(input('Enter regularization parameter C: (Enter to default)') 
+                  or '10')
+    sigma = float(input('Enter variance parameter sigma: (Enter to default)')
+                  or '1')
+    degree = int(input('Enter degree of polynomial: (Enter to default)') 
+                  or '3')
 
     # Choose kernel
     kernel_dict = {  # since instantiating untrained models is cheap
@@ -82,21 +86,25 @@ if model_choice=="onevsall":
                 'Chi2':Chi2(),
             }
 
-    kernel_name = input('Enter desired kernel: (RBF, Linear, Poly, Chi2)')\
+    kernel_name = input('Enter desired kernel (RBF, Linear, Poly, Chi2): ')\
                   or 'RBF'
     assert kernel_name in ['RBF', 'Linear', 'Poly', 'Chi2'], 'Invalid choice !'
 
     kernel = kernel_dict[kernel_name].kernel
 
+    print('Computing kernel matrix...', end=' ', flush=True)
     pre_K = kernel(hists_train, hists_train)  # pre-computed kernel matrix
+    print('done !')
 
     # Model
     model = svmOneVsAll(C=C, kernel=kernel, pre_K=pre_K)
     # Fit
     print('Fitting model...')
     model.fit(hists_train, Y_train)
-    print('Fitted model !')
+    print('done !')
     # Validate
+    print('teste') 
+    print(model.score(hists_val, Y_val))
     print('(Simple) validation score: ', model.score(hists_val, Y_val))
     # Predict
     save_test_preds(model, hists_test)

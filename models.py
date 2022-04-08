@@ -154,7 +154,7 @@ class svmOneVsAll:
             indices_class = np.where(Y == class_)
             binary_labels[indices_class] = 1
             self.submodels[class_].fit(X, binary_labels)
-            print(f'Fitted class {class_}\n')
+            print(f'Fitted class {class_ + 1}')
 
 
     def predict(self, X):
@@ -177,7 +177,7 @@ class svmOneVsAll:
         return y_pred
 
     
-    def score(self,x, y):
+    def score(self, x, y):
         """Calculates mean accuracy score given covariates to predict and true
         labels.
 

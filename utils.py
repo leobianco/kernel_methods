@@ -226,4 +226,5 @@ def save_test_preds(model, test_data, file_name='test_preds.csv'):
     Yte = {'Prediction' : Yte}
     dataframe = pd.DataFrame(Yte)
     dataframe.index += 1
+    print('Saving predictions as ', file_name)
     dataframe.to_csv(file_name, index_label='Id')
