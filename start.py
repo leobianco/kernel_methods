@@ -16,10 +16,14 @@ print('loaded !')
 
 
 # 2. Extract features
-load_pre_comp_hog = bool(input('Load pre-computed HOG ? (True/False)')) or True
+load_pre_comp_hog =\
+        input('Load pre-computed HOG? (True/False, Enter to default) ')
+assert load_pre_comp_hog.lower()=="true"\
+       or load_pre_comp_hog.lower()=="false"\
+       or not load_pre_comp_hog, "Invalid choice"  # default
 
-if not load_pre_comp_hog:
-    print('Extracting features with HOG (takes some minutes) \n')
+if not load_pre_comp_hog or load_pre_comp_hog.lower()=="false":
+    print('Extracting features with HOG (might take some minutes)')
     
     start_time = time.time()
     hists_train = np.apply_along_axis(hog, 1, X_train, n_orientations=9,
@@ -36,15 +40,14 @@ if not load_pre_comp_hog:
                                      cell_size=8, block_size=2)
     print('Total time for HOG on test: ', time.time()-start_time, 's')
 
-# Code to save pre-computed versions
-# with open('pre_computed_hogs.npy', 'wb') as f:
-#     np.save(f, hists_train)
-#     np.save(f, hists_val)
-#     np.save(f, hists_test)
-# print('Saved HOGs')
-# exit()
+    # Save pre-computed versions
+    with open('pre_computed_hogs.npy', 'wb') as f:
+        np.save(f, hists_train)
+        np.save(f, hists_val)
+        np.save(f, hists_test)
+    print('Saved HOGs')
 
-else:  # Load pre-computed versions
+elif load_pre_comp_hog.lower()=="true":  # Load pre-computed versions
     print('Loading pre-computed HOG descriptors.')
     with open('pre_computed_hogs.npy', 'rb') as f:
         hists_train = np.load(f)
