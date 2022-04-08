@@ -16,7 +16,7 @@ print('loaded !')
 
 
 # 2. Extract features
-load_pre_comp_hog = bool('Load pre-computed HOG ? (True/False)') or True
+load_pre_comp_hog = bool(input('Load pre-computed HOG ? (True/False)')) or True
 
 if not load_pre_comp_hog:
     print('Extracting features with HOG (takes some minutes) \n')
