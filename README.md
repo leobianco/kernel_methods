@@ -17,4 +17,4 @@ accuracy, try recalculating the HOG descriptors instead of using the
 pre-computed versions. Also, beware that the Chi2 kernel can be computationally
 demanding and take a while to predict/provide validation scores.
 
-![example](./example.png)
+<img src="./example.png" alt="example, Z" style="zoom:50%;" />
